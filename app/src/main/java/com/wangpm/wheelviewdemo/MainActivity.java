@@ -23,6 +23,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String[] PLANETS = new String[]{"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Uranus", "Neptune", "Pluto"};
     private BottomDialog bottomDialog;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_show_dialog_btn:
+                if (dialog != null){
+                    dialog.show();
+                    return;
+                }
                 View outerView = LayoutInflater.from(this).inflate(R.layout.dialog_content_view, null);
                 final WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv);
                 wv.setItems(getNumbers(),0);//init selected position is 0 初始选中位置为0
@@ -57,14 +62,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     }
                 });
 
-                new AlertDialog.Builder(this)
+                dialog = new AlertDialog.Builder(this)
                         .setTitle("WheelView in Dialog")
                         .setView(outerView)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Toast.makeText(MainActivity.this,
-                                        "selectedIndex: "+ wv.getSelectedPosition() +"  selectedItem: "+ wv.getSelectedItem(),
+                                        "selectedIndex: " + wv.getSelectedPosition() + "  selectedItem: " + wv.getSelectedItem(),
                                         Toast.LENGTH_SHORT).show();
                             }
                         })
