@@ -443,29 +443,45 @@ public class WheelView extends View {
 //                Log.i("wangpeiming", "onDraw: translateY:"+translateY  +"   j3: "+j3);
 
             canvas.translate(0.0F, translateY);//移动画布的原点坐标
-            if (translateY < firstLineY && translateYNext > firstLineY) {
-                // 条目经过第一条线
-                canvas.save();
-                canvas.clipRect(0, 0, measuredWidth, firstLineY - translateY);//处于第一条线的条目的上半部分
-                //clip之后坐标系并不会变化，只是未被clip的区域不会被绘制，tempRect是防止在ondraw中new对象
-                canvas.drawText(as, getTextX(as, paintOuterText, tempRect), baselineOuter, paintOuterText);
-                canvas.restore();//恢复到上一次save的地方
-                canvas.save();
-                canvas.clipRect(0, firstLineY - translateY, measuredWidth, (int) (itemHeightCenter));//处于第一条线的条目的下半部分
-                canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);//clip之后坐标系并不会变化，只是未被clip的区域不会被绘制
-                canvas.restore();
-            } else if (translateY < secondLineY && translateYNext > secondLineY) {
-                // 条目经过第二条线
-                canvas.save();
-                canvas.clipRect(0, 0, measuredWidth, secondLineY - translateY);
-                canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);
-                canvas.restore();
-                canvas.save();
-                canvas.clipRect(0, secondLineY - translateY, measuredWidth, (int) (itemHeightCenter));
-                canvas.drawText(as, getTextX(as, paintOuterText, tempRect), baselineOuter + (translateYNext-translateY)-itemHeightOuter, paintOuterText);
-                canvas.restore();
-            } else if (translateY >= firstLineY && translateYNext <= secondLineY) {
-                // 中间条目
+            /**
+             * 动画效果老的方式********************************
+             */
+//            if (translateY < firstLineY && translateYNext > firstLineY) {
+//                // 条目经过第一条线
+//                canvas.save();
+//                canvas.clipRect(0, 0, measuredWidth, firstLineY - translateY);//处于第一条线的条目的上半部分
+//                //clip之后坐标系并不会变化，只是未被clip的区域不会被绘制，tempRect是防止在ondraw中new对象
+//                canvas.drawText(as, getTextX(as, paintOuterText, tempRect), baselineOuter, paintOuterText);
+//                canvas.restore();//恢复到上一次save的地方
+//                canvas.save();
+//                canvas.clipRect(0, firstLineY - translateY, measuredWidth, (int) (itemHeightCenter));//处于第一条线的条目的下半部分
+//                canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);//clip之后坐标系并不会变化，只是未被clip的区域不会被绘制
+//                canvas.restore();
+//            } else if (translateY < secondLineY && translateYNext > secondLineY) {
+//                // 条目经过第二条线
+//                canvas.save();
+//                canvas.clipRect(0, 0, measuredWidth, secondLineY - translateY);
+//                canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);
+//                canvas.restore();
+//                canvas.save();
+//                canvas.clipRect(0, secondLineY - translateY, measuredWidth, (int) (itemHeightCenter));
+//                canvas.drawText(as, getTextX(as, paintOuterText, tempRect), baselineOuter + (translateYNext-translateY)-itemHeightOuter, paintOuterText);
+//                canvas.restore();
+//            } else if (translateY >= firstLineY && translateYNext <= secondLineY) {
+//                // 中间条目
+//                canvas.clipRect(0, 0, measuredWidth, (int) (itemHeightCenter));
+//                canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);
+//            } else {
+//                // 其他条目
+//                canvas.clipRect(0, 0, measuredWidth, (int) (itemHeightOuter));
+//                canvas.drawText(as, getTextX(as, paintOuterText, tempRect), baselineOuter, paintOuterText);
+//            }
+
+            /**
+             * 动画效果新的方式********************************
+             */
+            if (translateY >= firstLineY && translateY < (firstLineY + secondLineY) / 2
+                    || translateYNext > (firstLineY + secondLineY) / 2 && translateYNext <= secondLineY) {
                 canvas.clipRect(0, 0, measuredWidth, (int) (itemHeightCenter));
                 canvas.drawText(as, getTextX(as, paintCenterText, tempRect), baselineCenter, paintCenterText);
             } else {
